@@ -4,7 +4,7 @@ import math
 
 
 def get_pearson_correlation(y_values: list, y_avg: float) -> float:
-    x_avg = sum(range(len(y_values)))/len(y_values)
+    x_avg: float = sum(range(len(y_values)))/len(y_values)
     correlated_sum: float = 0
     y_sqr_sum: float = 0
     x_sqr_sum: float = 0
@@ -32,6 +32,7 @@ def analyse_input() -> None:
         positive_count += 1 if number > 0 else 0
         numbers_list.append(number)
     print_data(numbers_list, sorted(numbers_list), sum(numbers_list)/len(numbers_list), positive_count)
+
 
 
 if __name__ == "__main__":
