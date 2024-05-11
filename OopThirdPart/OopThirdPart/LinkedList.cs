@@ -8,7 +8,7 @@ namespace OopThirdPart
 {
     class LinkedList
     {
-        protected Node? _head;
+        private Node? _head;
 
         private Node? _tail;
 
@@ -16,41 +16,37 @@ namespace OopThirdPart
 
         private Node? _min;
         
-        #region C'tors
-        public LinkedList() { _head = null; _tail = null; _max = null; _min = null; }
-
-        public LinkedList(Node? node) { _head = node; _tail = node; _max = null; _min = null; }
-        #endregion
-
         #region Private
         private Node? GetPreTail()
         {
             Node? current = _head;
             if (_head == null || _head.Equals(_tail)) return null;
-            while (!_tail.Equals(current.Next)) current = current.Next;
+            while (!_tail!.Equals(current!.Next)) current = current.Next; 
+            //current cant be null because tail.(current.Next) will come before
             return current;
         }
 
-        private void UpdateExtremum(Node nominate)
+        private void UpdateMaxMin(Node nominate)
         {
             if (_min == null || nominate.Value < _min.Value) _min = nominate;
             if (_max == null || nominate.Value > _max.Value) _max = nominate;
         }
-        private void UpdateExtremum()
+        private void UpdateMaxMin()
         {
             Node? current = _head;
-            if (_max != null && _min != null)
-            while (current != null)
+            if (current == null) _max = _min = null;
+            _min = _max = current;
+            while (current != null && current != _tail!.Next)
             {
-                if (current.Value >= _max.Value) _max = current;
-                if (current.Value <= _min.Value) _min = current;
+                if (current.Value >= _max!.Value) _max = current;
+                if (current.Value <= _min!.Value) _min = current;
                 current = current.Next;
             }
+
         }
         #endregion
 
         #region Public
-        public Node? Head => _head;
 
         public void Append(int value)
         {
@@ -58,14 +54,14 @@ namespace OopThirdPart
             if (_tail != null)
             {
                 _tail.Next = toAdd;
-                _tail = _tail.Next;
+                _tail = toAdd;
             }
             else
             {
                 _head = toAdd;
-                _tail = _head;
+                _tail = toAdd;
             }
-            UpdateExtremum(toAdd);
+            UpdateMaxMin(toAdd);
         }
 
         public void Prepend(int value)
@@ -81,7 +77,7 @@ namespace OopThirdPart
                 _head = toAdd;
                 _tail = toAdd;
             }
-            UpdateExtremum(toAdd);
+            UpdateMaxMin(toAdd);
         }
 
         public int Pop()
@@ -92,13 +88,13 @@ namespace OopThirdPart
             {
                 valueToReturn = _tail.Value;
                 Node? preTail = GetPreTail();
-                if (preTail == null) _tail = _head = null;
+                if (preTail == null) _tail = _head = null; //in this case the list length is 1 pre-pop
                 else
                 {
                     preTail.Next = null;
                     _tail = preTail;
                 }
-                if (valueToReturn == _max.Value || valueToReturn == _min.Value) UpdateExtremum();
+                if (valueToReturn == _max!.Value || valueToReturn == _min!.Value) UpdateMaxMin();
                 return valueToReturn;
             }
         }
@@ -112,7 +108,7 @@ namespace OopThirdPart
                 Node? newHead = _head.Next;
                 _head.Next = null;
                 _head = newHead;
-                if (valueToReturn == _max.Value || valueToReturn == _min.Value) UpdateExtremum();
+                if (valueToReturn == _max!.Value || valueToReturn == _min!.Value) UpdateMaxMin();
                 return valueToReturn;
             }
         }
@@ -120,8 +116,8 @@ namespace OopThirdPart
         public virtual IEnumerable<int> ToList()
         {
             Node? current = _head;
-            List<int> list = new List<int>();
-            while (current != null && _head.Equals(current.Next))
+            if (IsCircular()) throw new InvalidOperationException("Can't convert to list because is circular.");
+            while (current != null)
             {
                 yield return current.Value;
                 current = current.Next;
@@ -134,27 +130,68 @@ namespace OopThirdPart
             if (_tail == null) return false;
             else
             {
-                List<int> list = (List<int>)ToList();
                 current = _tail.Next;
-                while (current != null)
-                    if (list.Contains(current.Value)) return true;
-                return false;
+                while (current != null && !current.Equals(_tail)) current = current.Next;
+                if (current == null) return false;
+                return true;
             } 
         }    
     
         public Node? GetMaxNode() { return _max; }
         public Node? GetMinNode() { return _min; }
 
+        //extra method because GetMin\Max returns a linked node so this api enables to remove it.
+        public void Remove(Node? node)
+        {
+            Node? current = _head;
+            Node? prev = null;
+            if (node != null && current != null)
+            {
+                while (current != null && !current.Equals(node)) 
+                { 
+                    prev = current;  
+                    current = current.Next;
+                }
+                if (current != null)
+                {
+                    prev!.Next = current.Next;
+                    current.Next = null;
+                }
+                if (node.Equals(_min) || node.Equals(_max)) UpdateMaxMin();
+            }
+        }
+
         public void Sort()
         {
-            List<int> list = (List<int>)ToList();
-            list.Sort();
-            LinkedList newList = new LinkedList();
-            foreach (int i in list) newList.Append(i);
-            _head = newList._head;
-            _tail = newList._tail;
-            _max = newList._max;
-            _min = newList._min;
+            Node? oldHead = _head, oldTail = _tail, current, prev;
+            if (_head != null) {
+                IEnumerable<int> list = ToList();
+                list = list.OrderBy(x => x);
+                foreach (int i in list) { Append(i); }
+                _head = oldTail!.Next;
+                _min = _head;
+                _max = _tail;
+                //from here Im deleting previous order manually in case someone mess the refs
+                oldTail.Next = null;
+                current = oldHead!.Next;
+                prev = oldHead;
+                while (current != null)
+                {
+                    prev.Next = null;
+                    prev = current;
+                    current = current.Next;
+                }
+            }
+
+        }
+        #endregion
+
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            return (_head != null? _head.ToString() : "Empty\n");
         }
         #endregion
     }

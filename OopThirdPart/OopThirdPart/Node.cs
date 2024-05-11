@@ -27,14 +27,14 @@ namespace OopThirdPart
 
         #region Getters & Setters
         public int Value => _value;
-        public Node? Next { get; set; }
+        public Node? Next { get => _next; set => _next = value; }
         #endregion
 
         #region Overrides
 
         public override string ToString()
         {
-            return $"{_value}";
+            return $"{_value}" + (_next != null ? $"->{_next}" : "\n");
         }
 
         public override bool Equals(object? obj)
