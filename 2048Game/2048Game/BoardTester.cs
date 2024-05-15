@@ -29,8 +29,8 @@ namespace _2048Game
             PrintBoard(board);
 
             score = board.Move(direction);
-            if (score == correctOutput) Console.WriteLine("score check succeed!");
-            else Console.WriteLine("score check failed!");
+            if (score == correctOutput) Console.WriteLine("\nscore check succeed!\n");
+            else Console.WriteLine("\nscore check failed!\n");
 
             PrintBoard(board);
         }
@@ -131,6 +131,24 @@ namespace _2048Game
                 Direction.DOWN,
                 0
             );
+        }
+
+        internal static void TestMove7()
+        {
+            Console.WriteLine("\n     Test move 7\n");
+            TestMove(
+                new uint[4, 4]
+                    {
+                        { 1024, 512, 0, 0 },
+                        { 2, 0, 0, 0 },
+                        { 128, 16, 32, 64 },
+                        { 2048, 2, 1024, 0 }
+                    },
+                Direction.LEFT,
+                0
+            );
+
+
         }
 
     }

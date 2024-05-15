@@ -57,6 +57,8 @@ namespace _2048Game
 
         public GameStatus Status => _status;
 
+        public GameBoard Board => _board;
+
 
         public void Move(Direction direction)
         {

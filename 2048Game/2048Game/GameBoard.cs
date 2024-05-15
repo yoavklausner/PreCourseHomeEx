@@ -24,6 +24,16 @@ namespace _2048Game
 
         #region Privates
 
+        private bool IsDataEqual(uint[,] other)
+        {
+            if (other == null) return false;
+            if (other.GetLength(0) != SIZE || other.GetLength(1) != SIZE) return false;
+            for (int i = 0; i < SIZE; i++) 
+                for (int j = 0; j < SIZE; j++)
+                    if (_data[i, j] != other[i, j]) return false;
+            return true;
+        }
+
         private void RandSlot()
         {
             List<(uint, uint)> freeCoords = GetFreeCoords();
@@ -58,13 +68,14 @@ namespace _2048Game
 
         public uint[,] Data
         {
-            get => _data;
+            get => (uint[,])_data.Clone();
             protected set => _data = value;
         }
 
 
         public uint Move(Direction direction)
         {
+            uint[,] preMoveData = (uint[,])_data.Clone();
             uint addedScore = 0;
             for (uint i = 0; i < SIZE; i++)
             {
@@ -92,7 +103,7 @@ namespace _2048Game
                     }
                 }
             }
-            RandSlot();
+            if (!IsDataEqual(preMoveData)) RandSlot();
             return addedScore;
         }
     }
