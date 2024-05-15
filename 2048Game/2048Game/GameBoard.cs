@@ -27,10 +27,12 @@ namespace _2048Game
         private void RandSlot()
         {
             List<(uint, uint)> freeCoords = GetFreeCoords();
-            if (freeCoords.Count == 0) throw new ArgumentException("free indexes array was empty.");
-            byte newNumber = (byte)(random.NextSingle() < 0.3f ? 4 : 2);
-            (uint row, uint col) newCoords = freeCoords[random.Next(freeCoords.Count)];
-            _data[newCoords.row, newCoords.col] = newNumber;
+            if (freeCoords.Count != 0)
+            {
+                byte newNumber = (byte)(random.NextSingle() < 0.3f ? 4 : 2);
+                (uint row, uint col) newCoords = freeCoords[random.Next(freeCoords.Count)];
+                _data[newCoords.row, newCoords.col] = newNumber;
+            }
         }
 
         private List<(uint, uint)> GetFreeCoords()
@@ -84,6 +86,7 @@ namespace _2048Game
                             addedScore += curNumber;
                             _data[next.row, next.col] = 0;
                         }
+                        else j--;
                         _data[dest.row, dest.col] = curNumber;
                         jDest++;
                     }

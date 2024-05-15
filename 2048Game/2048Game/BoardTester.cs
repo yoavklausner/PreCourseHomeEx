@@ -100,5 +100,38 @@ namespace _2048Game
             );
         }
 
+
+        internal static void TestMove5()
+        {
+            Console.WriteLine("\n     Test move 5\n");
+            TestMove(
+                new uint[4, 4]
+                    {
+                        { 1024, 256, 256, 512 },
+                        { 2, 4, 0, 2 },
+                        { 2, 2, 2, 2 },
+                        { 14336, 0, 14336, 2048 }
+                    },
+                Direction.RIGHT,
+                29192
+            );
+        }
+
+        internal static void TestMove6()
+        {
+            Console.WriteLine("\n     Test move 6\n");
+            TestMove(
+                new uint[4, 4]
+                    {
+                        { 1024, 512, 256, 512 },
+                        { 2, 4, 8, 2 },
+                        { 128, 16, 32, 64 },
+                        { 2048, 2, 1024, 2048 }
+                    },
+                Direction.DOWN,
+                0
+            );
+        }
+
     }
 }
