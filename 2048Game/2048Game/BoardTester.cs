@@ -29,8 +29,8 @@ namespace _2048Game
             PrintBoard(board);
 
             score = board.Move(direction);
-            if (score == correctOutput) Console.WriteLine("score check succeed!");
-            else Console.WriteLine("score check failed!");
+            if (score == correctOutput) Console.WriteLine("\nscore check succeed!\n");
+            else Console.WriteLine("\nscore check failed!\n");
 
             PrintBoard(board);
         }

@@ -58,7 +58,7 @@ namespace _2048Game
 
         public uint[,] Data
         {
-            get => _data;
+            get => (uint[,])_data.Clone();
             protected set => _data = value;
         }
 
