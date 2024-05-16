@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,13 +24,34 @@ namespace _2048Game
 
         }
 
+        private static ConsoleColor GetNumberColor(uint number)
+        {
+            return number switch
+            {
+                2 => ConsoleColor.Green,
+                4 => ConsoleColor.Blue,
+                8 => ConsoleColor.DarkYellow,
+                16 => ConsoleColor.Red,
+                32 => ConsoleColor.DarkMagenta,
+                64 => ConsoleColor.DarkBlue,
+                128 => ConsoleColor.Magenta,
+                256 => ConsoleColor.Cyan,
+                512 => ConsoleColor.DarkRed,
+                1024 => ConsoleColor.DarkGreen,
+                2048 => ConsoleColor.DarkMagenta,
+                _ => ConsoleColor.DarkGray,
+            };
+        }
+
         private static void ReWriteCube(uint number)
         {
             (int left, int top) cursorPos = Console.GetCursorPosition();
             for (int i = 0; i < MAX_DIG_COUNT; i++)
                 Console.Write(" ");
             Console.SetCursorPosition(cursorPos.left, cursorPos.top);
+            Console.ForegroundColor = GetNumberColor(number);
             Console.Write(number);
+            Console.ForegroundColor = ConsoleColor.Black;
         }
 
         private static void DisplayBoard() 
@@ -61,6 +83,8 @@ namespace _2048Game
         public static void Play()
         {
             Console.CursorVisible = false;
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.Clear();
             ConsoleKey inputKey;
             game = new Game();
             DisplayBoard();
@@ -83,7 +107,7 @@ namespace _2048Game
 
                 if (game.Status == GameStatus.LOSE)
                 {
-                    DisplayMessage("Game over, you lost :(");
+                    DisplayMessage($"Game over, your score: {game.Points}");
                     break;
                 }
                 else if (game.Status == GameStatus.WIN) DisplayMessage("Game won! You can keep playing ;)");

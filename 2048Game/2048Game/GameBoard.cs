@@ -39,7 +39,7 @@ namespace _2048Game
             List<(uint, uint)> freeCoords = GetFreeCoords();
             if (freeCoords.Count != 0)
             {
-                byte newNumber = (byte)(random.NextSingle() < 0.3f ? 4 : 2);
+                byte newNumber = (byte)(random.NextSingle() < 0.15f ? 4 : 2);
                 (uint row, uint col) newCoords = freeCoords[random.Next(freeCoords.Count)];
                 _data[newCoords.row, newCoords.col] = newNumber;
             }
